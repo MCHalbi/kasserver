@@ -5,7 +5,7 @@ import lxml
 
 Query = Dict[str, Union[str, Dict]]
 
-class KasApi:
+class KasApiClient:
     def __init__(self, kas_login: str, kas_password: str):
         self._client = zeep.Client("./KasApi.wsdl")
         self._kas_login = kas_login
