@@ -19,7 +19,7 @@ class KasApi:
             mail_forward=mail_forward
         )
 
-        response = self.call_api(request)
+        response = self.call_kas_api(request)
         result = self.convert_response(response)
 
         return result
@@ -37,7 +37,7 @@ class KasApi:
         return result
 
 
-    def call_api(self, request: Query):
+    def call_kas_api(self, request: Query):
         return self._client.service.KasApi(json.dumps(request))
 
     def create_query(self, action: str, **params) -> Query:
