@@ -19,23 +19,7 @@ class KasApi:
             mail_forward=mail_forward
         )
 
-        response = self.call_kas_api(request)
-        result = self.convert_response(response)
-
-        return result
-
-    def convert_response(self, response):
-        request = self.convert_request(response)
-        print(request)
-
-        return response
-
-    def convert_request(self, response):
-        converter = Converter()
-        result = converter.convert(response[0])
-
-        return result
-
+        return self.call_kas_api(request)
 
     def call_kas_api(self, request: Query):
         return self._client.service.KasApi(json.dumps(request))
@@ -56,15 +40,3 @@ class KasApi:
             request["KasRequestParams"] = filtered_params
 
         return request
-
-class Converter:
-    def convert(self, input_object):
-        print(f"{input_object=}")
-        print(f"{type(input_object)=}, {'key' in input_object=}, {len(input_object) == 2=}")
-        if (
-            len(input_object) == 2
-            and "key" in input_object
-            and "value" in input_object):
-            return {input_object["key"]: self.convert(input_object["value"])}
-
-        return input_object
