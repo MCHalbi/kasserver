@@ -1,8 +1,8 @@
 import zeep
 import json
-from typing import List, Union, Dict, Any
-import lxml
+from typing import Iterator, Dict, Any
 from dataclasses import dataclass
+
 
 @dataclass(frozen=True)
 class KasAuth:
@@ -10,7 +10,7 @@ class KasAuth:
     passphrase: str
     type: str
 
-    def __iter__(self) -> dict:
+    def __iter__(self) -> Iterator[tuple[str, str]]:
         return iter(
             [
                 ("kas_login", self.login),
@@ -18,6 +18,7 @@ class KasAuth:
                 ("kas_auth_data", self.passphrase),
             ]
         )
+
 
 @dataclass(frozen=True)
 class KasApiQuery:
@@ -37,12 +38,13 @@ class KasApiQuery:
 
         return json.dumps(query_dict)
 
+
 class KasApiClient:
     def __init__(self, kas_login: str, kas_password: str):
         self._client = zeep.Client("./KasApi.wsdl")
         self._auth = KasAuth(kas_login, kas_password, "plain")
 
-    def get_mailforwards(self, mail_forward = None):
+    def get_mailforwards(self, mail_forward=None):
         action = "get_mailforwards"
 
         query = self.create_query(
@@ -57,6 +59,7 @@ class KasApiClient:
 
     def create_query(self, action: str, **params) -> KasApiQuery:
         return KasApiQuery(self._auth, action, params)
+
 
 class KasApiResponse:
     def __init__(self, request_time, request_type, request_parameters):
