@@ -1,42 +1,5 @@
 import zeep
-import json
-from typing import Iterator, Dict, Any
-from dataclasses import dataclass
-
-
-@dataclass(frozen=True)
-class KasAuth:
-    login: str
-    passphrase: str
-    type: str
-
-    def __iter__(self) -> Iterator[tuple[str, str]]:
-        return iter(
-            [
-                ("kas_login", self.login),
-                ("kas_auth_type", self.type),
-                ("kas_auth_data", self.passphrase),
-            ]
-        )
-
-
-@dataclass(frozen=True)
-class KasApiQuery:
-    auth: KasAuth
-    action: str
-    params: Dict[str, Any]
-
-    def json(self):
-        query_dict = dict(self.auth) | {"KasRequestType": self.action}
-
-        filtered_params = {
-            key: value for key, value in self.params.items() if value is not None
-        }
-
-        if filtered_params:
-            query_dict["KasRequestParams"] = filtered_params
-
-        return json.dumps(query_dict)
+from kasserver import KasAuth, KasApiQuery
 
 
 class KasApiClient:
